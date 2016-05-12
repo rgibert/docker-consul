@@ -12,7 +12,7 @@ RUN \
 COPY usr/local/bin/entrypoint /usr/local/bin/entrypoint
 
 ENV CONSUL_ARCH="amd64"
-ENV CONSUL_URL="https://releases.hashicorp.com/consul/"
+ENV CONSUL_URL="https://releases.hashicorp.com/consul"
 ENV CONSUL_VERSION=0.6.4
 
 RUN \
