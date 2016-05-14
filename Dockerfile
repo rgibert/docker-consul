@@ -1,6 +1,7 @@
 FROM rgibert/gosu:alpine
 MAINTAINER Richard Gibert <richard@gibert.ca>
 
+# Default Consul VM settings
 ENV \
     CONSUL_USER="consul" \
     CONSUL_GROUP="consul" \
@@ -8,7 +9,7 @@ ENV \
     CONSUL_ARCH="amd64" \
     CONSUL_URL="https://releases.hashicorp.com/consul"
 
-# Default Consul settings
+# Default Consul server settings
 ENV \
     CONSUL_BOOTSTRAP_EXPECT="1" \
     CONSUL_DC="consul" \
@@ -62,6 +63,8 @@ EXPOSE \
     ${CONSUL_PORT_SERF_LAN} \
     ${CONSUL_PORT_SERF_WAN} \
     ${CONSUL_PORT_SERVER}
+
+VOLUME "${CONSUL_HOME}/data"
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
 CMD [ "consul-server" ]
