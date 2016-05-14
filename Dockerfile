@@ -39,7 +39,7 @@ RUN \
     sha256sum -c ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.sha256 && \
     unzip -d ${CONSUL_HOME} ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
     rm ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.sha256 && \
-    chown -r ${CONSUL_USER}:${CONSUL_GROUP} ${CONSUL_HOME} && \
+    chown -R ${CONSUL_USER}:${CONSUL_GROUP} ${CONSUL_HOME} && \
     chmod 755 ${CONSUL_HOME}/consul
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
