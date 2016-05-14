@@ -9,8 +9,16 @@ ENV \
     CONSUL_URL="https://releases.hashicorp.com/consul"
 
 RUN \
-    adduser -D -s /bin/false -g ${CONSUL_GROUP} ${CONSUL_USER} && \
-    apk --update add openssl gnupg && \
+    adduser \
+        -D \
+        -s /bin/false \
+        -g ${CONSUL_GROUP} \
+        ${CONSUL_USER} && \
+    apk \
+        --no-cache \
+        add \
+            openssl \
+            gnupg && \
     mkdir -p ${CONSUL_HOME}
 
 COPY \
@@ -33,16 +41,15 @@ RUN \
     gpg \
         --batch \
         --verify \
-        /tmp/consul_${CONSUL_VERSION}_SHA256SUMS.sig \
-        /tmp/consul_${CONSUL_VERSION}_SHA256SUMS && \
+        ${CONSUL_HOME}/consul_${CONSUL_VERSION}_SHA256SUMS.sig \
+        ${CONSUL_HOME}/consul_${CONSUL_VERSION}_SHA256SUMS && \
     grep \
         consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip \
-        consul_${CONSUL_VERSION}_SHA256SUMS \
+        ${CONSUL_HOME}/consul_${CONSUL_VERSION}_SHA256SUMS \
         | sha256sum -c && \
     unzip -d ${CONSUL_HOME} ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
     chown -r ${CONSUL_USER}:${CONSUL_GROUP} ${CONSUL_HOME} && \
-    chmod 755 ${CONSUL_HOME}/consul && \
-    rm -rf /var/cache/apk/*
+    chmod 755 ${CONSUL_HOME}/consul
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
 CMD [ "consul" ]
