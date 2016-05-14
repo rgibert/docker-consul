@@ -10,7 +10,7 @@ ENV \
 
 RUN \
     adduser -D -s /bin/false -g ${CONSUL_GROUP} ${CONSUL_USER} && \
-    apk --update add openssl && \
+    apk --update add openssl gnupg && \
     mkdir -p ${CONSUL_HOME}
 
 COPY \
@@ -41,7 +41,8 @@ RUN \
         | sha256sum -c && \
     unzip -d ${CONSUL_HOME} ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
     chown -r ${CONSUL_USER}:${CONSUL_GROUP} ${CONSUL_HOME} && \
-    chmod 755 ${CONSUL_HOME}/consul
+    chmod 755 ${CONSUL_HOME}/consul && \
+    rm -rf /var/cache/apk/*
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
 CMD [ "consul" ]
