@@ -34,10 +34,8 @@ RUN \
     wget \
         -O ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip \
         ${CONSUL_URL}/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
-    sha256sum \
-        -c \
-        ${CONSUL_SHA256} \
-        ${CONSUL_URL}/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
+    echo "${CONSUL_SHA256} ${CONSUL_HOME}/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip" > /tmp/consul.sha256 && \
+    sha256sum -c /tmp/consul.sha256 && \
     unzip -d ${CONSUL_HOME} ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
     rm ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
     chown -r ${CONSUL_USER}:${CONSUL_GROUP} ${CONSUL_HOME} && \
