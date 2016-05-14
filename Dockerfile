@@ -1,29 +1,30 @@
-FROM rgibert/gosu
+FROM rgibert/gosu:alpine
 MAINTAINER Richard Gibert <richard@gibert.ca>
 
-RUN \
-    groupadd -g 1000 consul && \
-    useradd -u 1000 -g consul consul
+ENV CONSUL_USER="consul"
+ENV CONSUL_GROUP="consul"
 
 RUN \
-    yum install -y \
-        wget
+    addgroup -g 1000 ${CONSUL_GROUP} && \
+    adduser -u 1000 -g ${CONSUL_GROUP} ${CONSUL_USER}
 
 COPY usr/local/bin/entrypoint /usr/local/bin/entrypoint
 
-ENV CONSUL_ARCH="amd64"
 ENV CONSUL_URL="https://releases.hashicorp.com/consul"
+ENV CONSUL_HOME="/usr/local/share/consul"
+ENV CONSUL_ARCH="amd64"
 ENV CONSUL_VERSION=0.6.4
 
 RUN \
+    mkdir -p ${CONSUL_HOME} && \
     wget \
-        -O /tmp/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip \
+        -O ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip \
         ${CONSUL_URL}/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
     wget \
-        -O /tmp/consul_${CONSUL_VERSION}_SHA256SUMS.sig \
+        -O ${CONSUL_HOME}/consul_${CONSUL_VERSION}_SHA256SUMS.sig \
         ${CONSUL_URL}/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_SHA256SUMS.sig && \
     wget \
-        -O /tmp/consul_${CONSUL_VERSION}_SHA256SUMS \
+        -O ${CONSUL_HOME}/consul_${CONSUL_VERSION}_SHA256SUMS \
         ${CONSUL_URL}/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_SHA256SUMS && \
     gpg \
         --batch \
@@ -34,7 +35,9 @@ RUN \
         consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip \
         consul_${CONSUL_VERSION}_SHA256SUMS \
         | sha256sum -c && \
-    unzip -d /usr/local/bin consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
+    unzip -d ${CONSUL_HOME} ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
+    chown -r ${CONSUL_USER}:${CONSUL_GROUP} ${CONSUL_HOME} && \
+    chmod 755 ${CONSUL_HOME}/consul
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
 CMD [ "consul" ]
