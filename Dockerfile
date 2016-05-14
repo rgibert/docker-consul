@@ -30,16 +30,18 @@ ENV \
     CONSUL_VERSION="0.6.4" \
     CONSUL_SHA256="abdf0e1856292468e2c9971420d73b805e93888e006c76324ae39416edcf0627"
 
+ADD \
+    ${CONSUL_URL}/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip \
+    ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip
+
 RUN \
-    wget \
-        -O ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip \
-        ${CONSUL_URL}/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
-    echo "${CONSUL_SHA256} ${CONSUL_HOME}/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip" > /tmp/consul.sha256 && \
-    sha256sum -c /tmp/consul.sha256 && \
+    echo "${CONSUL_SHA256}  ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip" > ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.sha256 && \
+    sha256sum -c ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.sha256 && \
     unzip -d ${CONSUL_HOME} ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
-    rm ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip && \
+    rm ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.zip ${CONSUL_HOME}/consul_${CONSUL_VERSION}_linux_${CONSUL_ARCH}.sha256 && \
     chown -r ${CONSUL_USER}:${CONSUL_GROUP} ${CONSUL_HOME} && \
     chmod 755 ${CONSUL_HOME}/consul
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
 CMD [ "consul" ]
+
