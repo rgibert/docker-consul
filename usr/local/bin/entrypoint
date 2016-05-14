@@ -2,7 +2,7 @@
 set -e
 
 if [[ "${1}" == 'consul' ]]; then
-    bash
+    su -c "${CONSUL_HOME}/consul"
 else
     exec "$@"
 fi
