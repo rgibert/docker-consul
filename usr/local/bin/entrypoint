@@ -1,8 +1,60 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
-if [[ "${1}" == 'consul' ]]; then
-    gosu consul "${CONSUL_HOME}/consul"
+# Set Consul server settings
+unset CONSUL_ARGS
+
+if [[ -n ${CONSUL_BOOTSTRAP_EXPECT} ]]; then
+    CONSUL_ARGS="${CONSUL_ARGS} -bootstrap-expect=${CONSUL_BOOTSTRAP_EXPECT}"
+fi
+
+if [[ -n ${CONSUL_RECURSOR} ]]; then
+    CONSUL_ARGS="${CONSUL_ARGS} -recursor=${CONSUL_RECURSOR}"
+fi
+
+if [[ -n ${CONSUL_DC} ]]; then
+    CONSUL_ARGS="${CONSUL_ARGS} -dc=${CONSUL_DC}"
+fi
+
+if [[ -n ${CONSUL_ENCRYPT_KEY} ]]; then
+    CONSUL_ARGS="${CONSUL_ARGS} -encrypt=${CONSUL_ENCRYPT_KEY}"
+fi
+
+if [[ -n ${CONSUL_JOIN_LAN_SRVS} ]]; then
+    for SRV in ${CONSUL_JOIN_LAN_SRVS}; do
+        CONSUL_ARGS="${CONSUL_ARGS} -retry-join ${SRV}"
+    done
+fi
+
+if [[ -n ${CONSUL_JOIN_LAN_RETRY_INT} ]]; then
+    CONSUL_ARGS="${CONSUL_ARGS} -retry-interval=${CONSUL_JOIN_RETRY_INT}"
+fi
+
+if [[ -n ${CONSUL_JOIN_LAN_RETRY_MAX} ]]; then
+    CONSUL_ARGS="${CONSUL_ARGS} -retry-max=${CONSUL_JOIN_RETRY_MAX}"
+fi
+
+if [[ -n ${CONSUL_JOIN_WAN_SRVS} ]]; then
+    for SRV in ${CONSUL_JOIN_WAN_SRVS}; do
+        CONSUL_ARGS="${CONSUL_ARGS} -retry-join-wan ${SRV}"
+    done
+fi
+
+if [[ -n ${CONSUL_JOIN_WAN_RETRY_INT} ]]; then
+    CONSUL_ARGS="${CONSUL_ARGS} -retry-interval-wan=${CONSUL_JOIN_RETRY_INT}"
+fi
+
+if [[ -n ${CONSUL_JOIN_WAN_RETRY_MAX} ]]; then
+    CONSUL_ARGS="${CONSUL_ARGS} -retry-max-wan=${CONSUL_JOIN_WAN_RETRY_MAX}"
+fi
+
+# Start consul in server mode
+if [[ "${1}" == 'consul-server' ]]; then
+    gosu \
+        consul \
+        "${CONSUL_HOME}/consul agent -server -data-dir=${CONSUL_HOME}/data ${CONSUL_ARGS}"
+
+# pass through command
 else
     exec "$@"
 fi

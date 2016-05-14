@@ -8,6 +8,11 @@ ENV \
     CONSUL_ARCH="amd64" \
     CONSUL_URL="https://releases.hashicorp.com/consul"
 
+# Default Consul settings
+ENV \
+    CONSUL_BOOTSTRAP_EXPECT="1" \
+    CONSUL_DC="consul"
+
 RUN \
     adduser \
         -D \
@@ -20,7 +25,7 @@ RUN \
             ca-certificates \
             openssl \
         && \
-    mkdir -p ${CONSUL_HOME}
+    mkdir -p ${CONSUL_HOME}/data
 
 COPY \
     usr/local/bin/entrypoint \
@@ -43,5 +48,5 @@ RUN \
     chmod 755 ${CONSUL_HOME}/consul
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
-CMD [ "consul" ]
+CMD [ "consul-server" ]
 
