@@ -5,8 +5,7 @@ ENV CONSUL_USER="consul"
 ENV CONSUL_GROUP="consul"
 
 RUN \
-    addgroup ${CONSUL_GROUP} && \
-    adduser -g ${CONSUL_GROUP} ${CONSUL_USER}
+    adduser -D -s /bin/false -g ${CONSUL_GROUP} ${CONSUL_USER}
 
 COPY usr/local/bin/entrypoint /usr/local/bin/entrypoint
 
