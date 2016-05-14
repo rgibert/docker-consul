@@ -52,7 +52,11 @@ fi
 if [[ "${1}" == 'consul-server' ]]; then
     gosu \
         consul \
-        "${CONSUL_HOME}/consul agent -server -data-dir=${CONSUL_HOME}/data ${CONSUL_ARGS}"
+        ${CONSUL_HOME}/consul \
+            agent \
+            -server \
+            -data-dir=${CONSUL_HOME}/data \
+            ${CONSUL_ARGS}
 
 # pass through command
 else
