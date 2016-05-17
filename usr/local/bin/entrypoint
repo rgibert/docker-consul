@@ -48,6 +48,10 @@ if [[ -n ${CONSUL_JOIN_WAN_RETRY_MAX} ]]; then
     CONSUL_ARGS="${CONSUL_ARGS} -retry-max-wan=${CONSUL_JOIN_WAN_RETRY_MAX}"
 fi
 
+if [[ -n ${CONSUL_DOMAIN} ]]; then
+    CONSUL_ARGS="${CONSUL_ARGS} -domain=${CONSUL_DOMAIN}
+fi
+
 # Start consul in server mode
 if [[ "${1}" == 'consul-server' ]]; then
     gosu \
