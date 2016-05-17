@@ -60,6 +60,7 @@ if [[ "${1}" == 'consul-server' ]]; then
             agent \
             -server \
             -data-dir=${CONSUL_HOME}/data \
+            -bind=0.0.0.0 \
             ${CONSUL_ARGS}
 
 # pass through command
