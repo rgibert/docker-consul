@@ -49,7 +49,7 @@ if [[ -n ${CONSUL_JOIN_WAN_RETRY_MAX} ]]; then
 fi
 
 if [[ -n ${CONSUL_DOMAIN} ]]; then
-    CONSUL_ARGS="${CONSUL_ARGS} -domain=${CONSUL_DOMAIN}
+    CONSUL_ARGS="${CONSUL_ARGS} -domain=${CONSUL_DOMAIN}"
 fi
 
 # Start consul in server mode
